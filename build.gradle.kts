@@ -41,8 +41,9 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
-    testImplementation("org.springdoc:springdoc-openapi-starter-webmvc-api:2.1.0")
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
+//    testImplementation("org.springdoc:springdoc-openapi-starter-webmvc-api:2.1.0")
+//    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
+    implementation("com.github.xiaoymin:knife4j-openapi3-jakarta-spring-boot-starter:4.1.0")
 
     runtimeOnly("io.lettuce:lettuce-core:6.2.0.RELEASE")
 

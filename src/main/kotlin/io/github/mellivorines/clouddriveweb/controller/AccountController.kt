@@ -1,5 +1,6 @@
 package io.github.mellivorines.clouddriveweb.controller
 
+import io.github.mellivorines.clouddriveweb.dao.entity.User
 import io.github.mellivorines.clouddriveweb.dao.input.UserInput
 import io.github.mellivorines.clouddriveweb.model.ResultModel
 import io.github.mellivorines.clouddriveweb.model.fail
@@ -51,7 +52,7 @@ class AccountController(private val accountService: AccountService) {
     @Operation(summary = "退出")
     @GetMapping("logout")
     @ResponseBody
-    fun logout(session: HttpSession, sessionStatus: SessionStatus): ResultModel {
+    fun logout(session: HttpSession, sessionStatus: SessionStatus,user: User): ResultModel {
         return try {
             success(accountService.logout(session, sessionStatus))
         } catch (e: Exception) {
