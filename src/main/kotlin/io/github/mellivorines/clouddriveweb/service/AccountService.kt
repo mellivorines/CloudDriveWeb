@@ -28,14 +28,14 @@ class AccountService(private val userRepository: UserRepository) {
     fun register(user: UserInput): Any? {
         //1.检查用户名是否存在
         val findByUserName = userRepository.findByUserName(user.userName)
-        return if (findByUserName != null){
+        return if (findByUserName != null) {
             "用户名已经存在！"
-        }else {
+        } else {
             //2.构建完整的用户信息
             user.lastLoginTime = LocalDateTime.now(Clock.system(ZoneId.systemDefault()))
             user.joinTime = LocalDateTime.now(Clock.system(ZoneId.systemDefault()))
             user.status = 1
-            var toEntity = user.toEntity()
+            val toEntity = user.toEntity()
             userRepository.save(toEntity)
         }
     }

@@ -2,7 +2,6 @@ package io.github.mellivorines.clouddriveweb.dao.entity
 
 import io.github.mellivorines.clouddriveweb.utils.MyUUIDIdGenerator
 import org.babyfish.jimmer.sql.*
-import org.babyfish.jimmer.sql.meta.UUIDIdGenerator
 
 
 /**

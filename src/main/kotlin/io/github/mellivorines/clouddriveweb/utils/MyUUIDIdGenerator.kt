@@ -11,9 +11,9 @@ import java.util.*
  * @version 1.0.0
  * @since 2023/6/23
  */
-class MyUUIDIdGenerator: UserIdGenerator<String> {
+class MyUUIDIdGenerator : UserIdGenerator<String> {
 
     override fun generate(entityType: Class<*>?): String {
-        return UUID.randomUUID().toString().replace("-","")
+        return UUID.randomUUID().toString().replace("-", "")
     }
 }

@@ -2,10 +2,8 @@ package io.github.mellivorines.clouddriveweb.dao.entity
 
 import io.github.mellivorines.clouddriveweb.utils.MyUUIDIdGenerator
 import io.swagger.v3.oas.annotations.media.Schema
-import java.time.LocalDateTime
 import org.babyfish.jimmer.sql.*
-import org.babyfish.jimmer.sql.meta.UUIDIdGenerator
-import java.util.UUID
+import java.time.LocalDateTime
 
 
 /**

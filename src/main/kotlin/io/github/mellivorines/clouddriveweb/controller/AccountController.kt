@@ -1,6 +1,5 @@
 package io.github.mellivorines.clouddriveweb.controller
 
-import io.github.mellivorines.clouddriveweb.dao.entity.User
 import io.github.mellivorines.clouddriveweb.dao.input.UserInput
 import io.github.mellivorines.clouddriveweb.model.ResultModel
 import io.github.mellivorines.clouddriveweb.model.fail
@@ -41,8 +40,10 @@ class AccountController(private val accountService: AccountService) {
      */
     @Operation(summary = "登陆")
     @GetMapping("login")
-    fun login(@RequestParam("userName") userName: String,
-              @RequestParam("password") password: String): ResultModel {
+    fun login(
+        @RequestParam("userName") userName: String,
+        @RequestParam("password") password: String
+    ): ResultModel {
         return success(accountService.login(userName, password))
     }
 

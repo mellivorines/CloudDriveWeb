@@ -15,8 +15,8 @@ import org.springframework.stereotype.Repository
 @Repository
 interface UserRepository : KRepository<User, String> {
 
-     fun findByUserNameAndPassword(userName: String, password: String):User?
+    fun findByUserNameAndPassword(userName: String, password: String): User?
 
-     fun findByUserName(userName: String):User?
+    fun findByUserName(userName: String): User?
 }
 
