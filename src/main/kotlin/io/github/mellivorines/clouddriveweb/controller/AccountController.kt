@@ -52,7 +52,7 @@ class AccountController(private val accountService: AccountService) {
     @Operation(summary = "退出")
     @GetMapping("logout")
     @ResponseBody
-    fun logout(session: HttpSession, sessionStatus: SessionStatus,user: User): ResultModel {
+    fun logout(session: HttpSession, sessionStatus: SessionStatus): ResultModel {
         return try {
             success(accountService.logout(session, sessionStatus))
         } catch (e: Exception) {
