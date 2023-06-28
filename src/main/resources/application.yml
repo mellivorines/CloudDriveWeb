@@ -1,6 +1,12 @@
 server:
   port: 8080 #应用的端口
 spring:
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 1024MB
+      max-request-size: 1024MB
+      location: /home/tmp
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
