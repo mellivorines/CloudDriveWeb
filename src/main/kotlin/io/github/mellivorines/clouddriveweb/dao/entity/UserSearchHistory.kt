@@ -7,49 +7,37 @@ import org.babyfish.jimmer.sql.*
 
 /**
  * <p>
- *  用户信息表
+ *  用户搜索历史表
  * </p>
  *
  * @author lilinxi
  * @date 2023-07-01
  */
 @Entity
-@Table(name = "cloud_drive_user")
-@Schema(description = " 用户信息表", title = " 用户信息表")
-interface User {
+@Table(name = "cloud_drive_user_search_history")
+@Schema(description = " 用户搜索历史表", title = " 用户搜索历史表")
+interface UserSearchHistory {
+
+    /**
+     *  主键 */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @get:Schema(description = " 主键 ")
+    val id: Long
 
     /**
      *  用户id */
-    @Id
+    @Key
     @Column(name = "user_id")
     @get:Schema(description = " 用户id ")
     val userId: Long
 
     /**
-     *  用户名 */
+     *  搜索文案 */
     @Key
-    @get:Schema(description = " 用户名 ")
-    val username: String
-
-    /**
-     *  密码 */
-    @get:Schema(description = " 密码 ")
-    val password: String
-
-    /**
-     *  随机盐值 */
-    @get:Schema(description = " 随机盐值 ")
-    val salt: String
-
-    /**
-     *  密保问题 */
-    @get:Schema(description = " 密保问题 ")
-    val question: String
-
-    /**
-     *  密保答案 */
-    @get:Schema(description = " 密保答案 ")
-    val answer: String
+    @Column(name = "search_content")
+    @get:Schema(description = " 搜索文案 ")
+    val searchContent: String
 
     /**
      *  创建时间 */
@@ -59,6 +47,7 @@ interface User {
 
     /**
      *  更新时间 */
+    @Key
     @Column(name = "update_time")
     @get:Schema(description = " 更新时间 ")
     val updateTime: LocalDateTime

@@ -41,9 +41,20 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
-//    testImplementation("org.springdoc:springdoc-openapi-starter-webmvc-api:2.1.0")
-//    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
     implementation("com.github.xiaoymin:knife4j-openapi3-jakarta-spring-boot-starter:4.1.0")
+
+    implementation("com.github.tobato:fastdfs-client:1.27.2")
+    implementation("com.aliyun.oss:aliyun-sdk-oss:3.17.0")
+
+    implementation("io.jsonwebtoken:jjwt-api:0.11.5")
+
+    implementation("com.google.guava:guava:32.0.1-jre")
+
+    implementation("org.reflections:reflections:0.10.2")
+
+
+
+
 
     runtimeOnly("io.lettuce:lettuce-core:6.2.0.RELEASE")
 
