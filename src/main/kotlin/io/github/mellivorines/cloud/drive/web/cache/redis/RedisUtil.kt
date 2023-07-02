@@ -62,8 +62,8 @@ class RedisUtil {
      * @param key
      * @return
      */
-    operator fun get(key: String?): Any? {
-        return redisTemplate.opsForValue()[key!!]
+    operator fun get(key: String): String? {
+        return redisTemplate.opsForValue()[key]
     }
 
     /**

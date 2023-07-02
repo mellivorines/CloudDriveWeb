@@ -1,14 +1,20 @@
 //package io.github.mellivorines.cloud.drive.web.common.aspect
 //
+//import io.github.mellivorines.cloud.drive.web.cache.core.CacheManager
+//import io.github.mellivorines.cloud.drive.web.constants.CommonConstant
 //import io.github.mellivorines.cloud.drive.web.enum.ResponseCode
+//import io.github.mellivorines.cloud.drive.web.model.fail
 //import io.github.mellivorines.cloud.drive.web.utils.JwtUtil
 //import io.github.mellivorines.cloud.drive.web.utils.UserIdUtil
 //import jakarta.servlet.http.HttpServletRequest
 //import org.apache.commons.lang3.StringUtils
+//import org.aspectj.lang.ProceedingJoinPoint
+//import org.aspectj.lang.annotation.Around
+//import org.aspectj.lang.annotation.Aspect
+//import org.aspectj.lang.annotation.Pointcut
 //import org.slf4j.Logger
 //import org.slf4j.LoggerFactory
 //import org.springframework.beans.factory.annotation.Autowired
-//import org.springframework.beans.factory.annotation.Qualifier
 //import org.springframework.stereotype.Component
 //import org.springframework.web.context.request.RequestContextHolder
 //import org.springframework.web.context.request.ServletRequestAttributes
@@ -25,7 +31,7 @@
 //@Aspect
 //@Component
 //class CloudDriveWebLoginAspect {
-//    private val log: Logger = LoggerFactory.getLogger(com.rubin.rpan.common.aspect.RPanLoginAspect::class.java)
+//    private val log: Logger = LoggerFactory.getLogger(CloudDriveWebLoginAspect::class.java)
 //
 //    /**
 //     * 登录认证参数名称
@@ -40,16 +46,15 @@
 //    /**
 //     * 切点入口
 //     */
-//    private val POINT_CUT = "@annotation(com.rubin.rpan.common.annotation.NeedLogin)"
+//    private val POINT_CUT = "@annotation(io.github.mellivorines.cloud.drive.web.common.annotation.NeedLogin)"
 //
 //    @Autowired
-//    @Qualifier(value = "cacheManager")
-//    private val cacheManager: CacheManager? = null
+//    private lateinit var cacheManager: CacheManager
 //
 //    /**
 //     * 切点
 //     */
-//    @Pointcut(value = POINT_CUT)
+//    @Pointcut(value = "\$POINT_CUT")
 //    fun loginAuth() {
 //    }
 //
@@ -62,7 +67,7 @@
 //        log.debug("成功拦截到请求,uri为:{}", uri)
 //        if (!checkAndSaveUserId(request)) {
 //            log.warn("成功拦截到请求,uri为:{}, 检测到用户未登录,将跳转至登录页面", uri)
-//            return R.fail(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc())
+//            return fail(ResponseCode.NEED_LOGIN.msg)
 //        }
 //        log.debug("成功拦截到请求,uri为:{}, 请求通过", uri)
 //        return proceedingJoinPoint.proceed()
@@ -87,7 +92,7 @@
 //        if (Objects.isNull(userId)) {
 //            return false
 //        }
-//        val redisValue: Any = cacheManager.get(CommonConstant.USER_LOGIN_PREFIX + userId)
+//        val redisValue: Any? = cacheManager.get(CommonConstant.USER_LOGIN_PREFIX + userId)
 //        if (Objects.isNull(redisValue)) {
 //            return false
 //        }

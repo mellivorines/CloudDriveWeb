@@ -14,6 +14,6 @@ import org.springframework.stereotype.Repository
  */
 @Repository
 interface UserRepository : KRepository<User, String> {
-
+     fun findByUsername(userName: String): User
 }
 

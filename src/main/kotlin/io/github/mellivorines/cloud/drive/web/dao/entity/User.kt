@@ -3,7 +3,6 @@ package io.github.mellivorines.cloud.drive.web.dao.entity
 import io.github.mellivorines.cloud.drive.web.utils.MyUUIDIdGenerator
 import io.swagger.v3.oas.annotations.media.Schema
 import org.babyfish.jimmer.sql.*
-import java.time.LocalDateTime
 
 
 /**
@@ -17,7 +16,7 @@ import java.time.LocalDateTime
 @Entity
 @Table(name = "cloud_drive_user")
 @Schema(description = " 用户信息表", title = " 用户信息表")
-interface User {
+interface User:BaseEntity {
 
     /**
      *  用户id */
@@ -52,16 +51,4 @@ interface User {
      *  密保答案 */
     @get:Schema(description = " 密保答案 ")
     val answer: String
-
-    /**
-     *  创建时间 */
-    @Column(name = "create_time")
-    @get:Schema(description = " 创建时间 ")
-    val createTime: LocalDateTime
-
-    /**
-     *  更新时间 */
-    @Column(name = "update_time")
-    @get:Schema(description = " 更新时间 ")
-    val updateTime: LocalDateTime
 }

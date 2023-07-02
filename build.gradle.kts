@@ -1,5 +1,4 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.jetbrains.kotlin.kapt3.base.Kapt.kapt
 
 plugins {
     id("org.springframework.boot") version "3.1.0"
@@ -27,6 +26,7 @@ dependencies {
 //    implementation("io.jsonwebtoken:jjwt:0.9.1")
 
     implementation("org.springframework.boot:spring-boot-starter-mail")
+    implementation("org.springframework.boot:spring-boot-starter-aop")
 
     implementation("org.babyfish.jimmer:jimmer-spring-boot-starter:${jimmerVersion}")
     ksp("org.babyfish.jimmer:jimmer-ksp:${jimmerVersion}")
@@ -46,15 +46,13 @@ dependencies {
     implementation("com.github.tobato:fastdfs-client:1.27.2")
     implementation("com.aliyun.oss:aliyun-sdk-oss:3.17.0")
 
-    implementation("io.jsonwebtoken:jjwt-api:0.11.5")
+//    implementation("io.jsonwebtoken:jjwt-api:0.11.5")
+    implementation("io.jsonwebtoken:jjwt:0.9.1")
+
 
     implementation("com.google.guava:guava:32.0.1-jre")
 
     implementation("org.reflections:reflections:0.10.2")
-
-
-
-
 
     runtimeOnly("io.lettuce:lettuce-core:6.2.0.RELEASE")
 

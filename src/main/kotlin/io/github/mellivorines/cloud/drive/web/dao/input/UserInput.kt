@@ -22,42 +22,42 @@ data class UserInput(
     /**
      *  用户id */
     @Schema(description = " 用户id ")
-    val userId: String,
+    var userId: String?,
 
     /**
      *  用户名 */
     @Schema(description = " 用户名 ")
-    val username: String,
+    var username: String,
 
     /**
      *  密码 */
     @Schema(description = " 密码 ")
-    val password: String,
+    var password: String,
 
     /**
      *  随机盐值 */
     @Schema(description = " 随机盐值 ")
-    val salt: String,
+    var salt: String?,
 
     /**
      *  密保问题 */
     @Schema(description = " 密保问题 ")
-    val question: String,
+    var question: String?,
 
     /**
      *  密保答案 */
     @Schema(description = " 密保答案 ")
-    val answer: String,
+    var answer: String?,
 
     /**
      *  创建时间 */
     @Schema(description = " 创建时间 ")
-    val createTime: LocalDateTime,
+    var createTime: LocalDateTime?,
 
     /**
      *  更新时间 */
     @Schema(description = " 更新时间 ")
-    val updateTime: LocalDateTime,
+    var updateTime: LocalDateTime?,
 
     ) : Input<User> {
 

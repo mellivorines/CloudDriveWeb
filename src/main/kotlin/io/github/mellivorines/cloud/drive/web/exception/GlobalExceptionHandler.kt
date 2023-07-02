@@ -20,12 +20,14 @@ class GlobalExceptionHandler {
 
     @ExceptionHandler
     fun handlerException(exception: Exception): ResultModel {
+        exception.printStackTrace()
         val message = exception.message
         return fail(message)
     }
 
     @ExceptionHandler(value = [HttpMessageNotReadableException::class])
     fun handlerHttpMessageNotReadableException(exception: Exception): ResultModel {
+        exception.printStackTrace()
         val message = exception.message
         return fail(message)
     }
@@ -33,13 +35,15 @@ class GlobalExceptionHandler {
     @ExceptionHandler(value = [SQLException::class])
     fun msgMySQLExecuteError(exception: java.lang.Exception): ResultModel {
         exception.printStackTrace()
+        exception.printStackTrace()
         val message = exception.message
         return fail(message)
     }
 
     @ExceptionHandler(value = [NullPointerException::class])
-    fun findNullPointerException(e: NullPointerException): ResultModel {
-        val message = e.message
+    fun findNullPointerException(exception: NullPointerException): ResultModel {
+        exception.printStackTrace()
+        val message = exception.message
         return fail("检查业务逻辑是否合理：$message")
     }
 

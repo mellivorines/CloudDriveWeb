@@ -2,7 +2,6 @@ package io.github.mellivorines.cloud.drive.web.utils
 
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
-import org.apache.commons.lang3.StringUtils
 import java.util.*
 
 
@@ -37,9 +36,9 @@ object JwtUtil {
      * @return
      */
     fun generateToken(
-        subject: String?,
-        claimKey: String?,
-        claimValue: Any?,
+        subject: String,
+        claimKey: String,
+        claimValue: Any,
         expire: Long
     ): String {
         return Jwts.builder()
@@ -57,17 +56,13 @@ object JwtUtil {
      * @param token
      * @return
      */
-    fun analyzeToken(token: String?, claimKey: String): Any? {
-        return if (StringUtils.isBlank(token)) {
-            null
-        } else try {
+    fun analyzeToken(token: String, claimKey: String): Any {
+        return {
             val claims = Jwts.parser()
                 .setSigningKey(JWT_PRIVATE_KEY)
                 .parseClaimsJws(token)
                 .body
             claims[claimKey]
-        } catch (e: Exception) {
-            null
         }
     }
 }
