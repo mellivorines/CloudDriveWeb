@@ -12,24 +12,10 @@ spring:
       matching-strategy: ant_path_matcher
   #mysql数据库
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/CloudDrive?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf8&autoReconnect=true&allowMultiQueries=true&useSSL=false
+    url: jdbc:mysql://127.0.0.1:3306/CloudDrive?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf8&autoReconnect=true&allowMultiQueries=true&useSSL=false&useSSL=false&serverTimezone=UTC
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: 123456
-  #redis数据库
-  data:
-    redis:
-      host: 124.220.152.5
-      port: 6379
-      password: 777888love@#
-      database: 0
-      timeout: 2000
-      jedis:
-        pool:
-          max-active: 20
-          max-wait: -1
-          max-idle: 10
-          min-idle: 0
 #jimmer框架相关配置
 jimmer:
   language: kotlin
@@ -48,9 +34,9 @@ springdoc:
     - group: 'default'
       paths-to-match: '/**'
       packages-to-scan:
-        - io.github.mellivorines.clouddriveweb.dao.input
-        - io.github.mellivorines.clouddriveweb.dao.entity
-        - io.github.mellivorines.clouddriveweb.controller
+        - io.github.mellivorines.cloud.drive.web.dao.input
+        - io.github.mellivorines.cloud.drive.web.dao.entity
+        - io.github.mellivorines.cloud.drive.web.controller
 # knife4j的增强配置，不需要增强可以不配,访问地址：http://127.0.0.1:8080/doc.html
 knife4j:
   enable: true
@@ -58,7 +44,21 @@ knife4j:
     language: zh_cn
     swagger-model-name: "实体类"
 #项目相关自定义配置
-CloudDrive:
-    file:
-      path: /Users/lilinxi/CloudDrive
+cloud:
+  drive:
+    web:
+      storage:
+        processor:
+          type: io.github.mellivorines.cloud.drive.web.storage.local.LocalStorageProcessor
+        local:
+          root-file-path: /data/pan
+          temp-path: /data/pan/temp
+      cache:
+        type: io.github.mellivorines.cloud.drive.web.cache.redis.RedisCache
+        redis:
+          host: 124.220.152.5
+          port: 6379
+          password: 777888love@#
+          database: 0
+
 
