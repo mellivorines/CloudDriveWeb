@@ -11,121 +11,116 @@
  Target Server Version : 80031 (8.0.31)
  File Encoding         : 65001
 
- Date: 26/06/2023 02:37:23
+ Date: 02/07/2023 22:55:19
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
--- Table structure for file_info
+-- Table structure for cloud_drive_file
 -- ----------------------------
-DROP TABLE IF EXISTS `file_info`;
-CREATE TABLE `file_info` (
-  `file_info_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '文件ID',
-  `user_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用户ID',
-  `file_md5` varchar(32) DEFAULT NULL COMMENT 'md5值，第一次上传记录',
-  `file_pid` varchar(10) DEFAULT NULL COMMENT '父级ID',
-  `file_size` bigint DEFAULT NULL COMMENT '文件大小',
-  `file_name` varchar(200) DEFAULT NULL COMMENT '文件名称',
-  `file_cover` varchar(100) DEFAULT NULL COMMENT '封面',
-  `file_path` varchar(100) DEFAULT NULL COMMENT '文件路径',
-  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-  `last_update_time` datetime DEFAULT NULL COMMENT '最后更新时间',
-  `folder_type` tinyint(1) DEFAULT NULL COMMENT '0:文件 1:目录',
-  `file_category` tinyint(1) DEFAULT NULL COMMENT '1:视频 2:音频  3:图片 4:文档 5:其他',
-  `file_type` tinyint(1) DEFAULT NULL COMMENT ' 1:视频 2:音频  3:图片 4:pdf 5:doc 6:excel 7:txt 8:code 9:zip 10:其他',
-  `status` tinyint(1) DEFAULT NULL COMMENT '0:转码中 1转码失败 2:转码成功',
-  `recovery_time` datetime DEFAULT NULL COMMENT '回收站时间',
-  `del_flag` tinyint(1) DEFAULT '2' COMMENT '删除标记 0:删除  1:回收站  2:正常',
-  PRIMARY KEY (`file_info_id`) USING BTREE,
-  KEY `idx_create_time` (`create_time`),
-  KEY `idx_user_id` (`user_id`),
-  KEY `idx_md5` (`file_md5`) USING BTREE,
-  KEY `idx_file_pid` (`file_pid`),
-  KEY `idx_del_flag` (`del_flag`),
-  KEY `idx_recovery_time` (`recovery_time`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='文件信息';
+DROP TABLE IF EXISTS `cloud_drive_file`;
+CREATE TABLE `cloud_drive_file` (
+  `file_id` varchar(32) COLLATE utf8mb4_bin NOT NULL COMMENT '文件id',
+  `filename` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '文件名称',
+  `real_path` varchar(700) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '文件物理路径',
+  `file_size` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '文件实际大小',
+  `file_size_desc` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '文件大小展示字符',
+  `file_suffix` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '文件后缀',
+  `file_preview_content_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '文件预览的响应头Content-Type的值',
+  `md5` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '文件唯一标识',
+  `create_user` varchar(32) COLLATE utf8mb4_bin NOT NULL COMMENT '创建人',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`file_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC COMMENT='物理文件信息表';
 
 -- ----------------------------
--- Records of file_info
+-- Table structure for cloud_drive_share
 -- ----------------------------
-BEGIN;
-INSERT INTO `file_info` (`file_info_id`, `user_id`, `file_md5`, `file_pid`, `file_size`, `file_name`, `file_cover`, `file_path`, `create_time`, `last_update_time`, `folder_type`, `file_category`, `file_type`, `status`, `recovery_time`, `del_flag`) VALUES ('0LZ8cAWtiM', '3178033358', '15d3b1d059bd580ea828cf264f6c7c3c', '0', 34974, 'WechatIMG361.jpeg', '202306/31780333580LZ8cAWtiM_.jpeg', '202306/31780333580LZ8cAWtiM.jpeg', '2023-06-10 15:09:27', '2023-06-10 15:12:25', 0, 3, 3, 2, '2023-06-10 15:12:10', 2);
-INSERT INTO `file_info` (`file_info_id`, `user_id`, `file_md5`, `file_pid`, `file_size`, `file_name`, `file_cover`, `file_path`, `create_time`, `last_update_time`, `folder_type`, `file_category`, `file_type`, `status`, `recovery_time`, `del_flag`) VALUES ('CSdKA1WHcK', '3178033358', NULL, '0', NULL, 'mytest', NULL, NULL, '2023-06-10 15:13:44', '2023-06-10 15:13:44', 1, NULL, NULL, 2, NULL, 2);
-INSERT INTO `file_info` (`file_info_id`, `user_id`, `file_md5`, `file_pid`, `file_size`, `file_name`, `file_cover`, `file_path`, `create_time`, `last_update_time`, `folder_type`, `file_category`, `file_type`, `status`, `recovery_time`, `del_flag`) VALUES ('P4jcIvjfSd', '3178033358', 'c447dee84adf50a6101a323902356d3f', '0', 60416, '附件6 中国红十字会志愿者登记表.doc', NULL, '202306/3178033358P4jcIvjfSd.doc', '2023-06-10 15:13:06', '2023-06-10 15:13:06', 0, 5, 10, 2, NULL, 2);
-COMMIT;
+DROP TABLE IF EXISTS `cloud_drive_share`;
+CREATE TABLE `cloud_drive_share` (
+  `share_id` varchar(32) COLLATE utf8mb4_bin NOT NULL COMMENT '分享id',
+  `share_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '分享名称',
+  `share_type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '分享类型（0 有提取码）',
+  `share_day_type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '分享类型（0 永久有效；1 7天有效；2 30天有效）',
+  `share_day` tinyint(1) NOT NULL DEFAULT '0' COMMENT '分享有效天数（永久有效为0）',
+  `share_end_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '分享结束时间',
+  `share_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '分享链接地址',
+  `share_code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '分享提取码',
+  `share_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '分享状态（0 正常；1 有文件被删除）',
+  `create_user` varchar(32) COLLATE utf8mb4_bin NOT NULL COMMENT '分享创建人',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`share_id`) USING BTREE,
+  UNIQUE KEY `uk_create_user_time` (`create_user`,`create_time`) USING BTREE COMMENT '创建人、创建时间唯一索引'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC COMMENT='用户分享表';
 
 -- ----------------------------
--- Table structure for file_share
+-- Table structure for cloud_drive_share_file
 -- ----------------------------
-DROP TABLE IF EXISTS `file_share`;
-CREATE TABLE `file_share` (
-  `file_share_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '分享ID',
-  `file_info_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '文件ID',
-  `user_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用户ID',
-  `valid_type` tinyint(1) DEFAULT NULL COMMENT '有效期类型 0:1天 1:7天 2:30天 3:永久有效',
-  `expire_time` datetime DEFAULT NULL COMMENT '失效时间',
-  `share_time` datetime DEFAULT NULL COMMENT '分享时间',
-  `code` varchar(5) DEFAULT NULL COMMENT '提取码',
-  `show_count` int DEFAULT '0' COMMENT '浏览次数',
-  PRIMARY KEY (`file_share_id`) USING BTREE,
-  KEY `idx_file_id` (`file_info_id`),
-  KEY `idx_user_id` (`user_id`),
-  KEY `idx_share_time` (`share_time`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='分享信息';
+DROP TABLE IF EXISTS `cloud_drive_share_file`;
+CREATE TABLE `cloud_drive_share_file` (
+  `id` varchar(32) COLLATE utf8mb4_bin NOT NULL COMMENT '主键',
+  `share_id` varchar(32) COLLATE utf8mb4_bin NOT NULL COMMENT '分享id',
+  `file_id` varchar(32) COLLATE utf8mb4_bin NOT NULL COMMENT '文件记录ID',
+  `create_user` varchar(32) COLLATE utf8mb4_bin NOT NULL COMMENT '分享创建人',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `uk_share_id_file_id` (`share_id`,`file_id`) USING BTREE COMMENT '分享ID、文件ID联合唯一索引'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC COMMENT='用户分享文件表';
 
 -- ----------------------------
--- Records of file_share
+-- Table structure for cloud_drive_user
 -- ----------------------------
-BEGIN;
-COMMIT;
-
--- ----------------------------
--- Table structure for user
--- ----------------------------
-DROP TABLE IF EXISTS `user`;
-CREATE TABLE `user` (
-  `user_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用户ID',
-  `nick_name` varchar(20) DEFAULT NULL COMMENT '昵称',
-  `user_name` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用户名：可以使用邮箱或者电话号码',
-  `password` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '密码',
-  `user_third_info_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '用户第三方信息ID',
-  `join_time` datetime DEFAULT NULL COMMENT '加入时间',
-  `last_login_time` datetime DEFAULT NULL COMMENT '最后登录时间',
-  `status` tinyint DEFAULT NULL COMMENT '0:禁用 1:正常',
-  `use_space` bigint DEFAULT '0' COMMENT '使用空间单位byte',
-  `total_space` bigint DEFAULT NULL COMMENT '总空间',
+DROP TABLE IF EXISTS `cloud_drive_user`;
+CREATE TABLE `cloud_drive_user` (
+  `user_id` varchar(32) COLLATE utf8mb4_bin NOT NULL COMMENT '用户id',
+  `username` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '用户名',
+  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '密码',
+  `salt` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '随机盐值',
+  `question` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '密保问题',
+  `answer` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '密保答案',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`user_id`) USING BTREE,
-  UNIQUE KEY `key_email` (`user_name`),
-  UNIQUE KEY `key_nick_name` (`nick_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户信息';
+  UNIQUE KEY `uk_username` (`username`) USING BTREE COMMENT '用户名唯一索引'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC COMMENT='用户信息表';
 
 -- ----------------------------
--- Records of user
+-- Table structure for cloud_drive_user_file
 -- ----------------------------
-BEGIN;
-INSERT INTO `user` (`user_id`, `nick_name`, `user_name`, `password`, `user_third_info_id`, `join_time`, `last_login_time`, `status`, `use_space`, `total_space`) VALUES ('da8a7dc3994e40ab869a38a1f7cc4431', 'linxi', 'lilinxi015@163.com', '654594Mi', NULL, '2023-06-25 22:59:49', '2023-06-25 22:59:49', 1, NULL, NULL);
-COMMIT;
+DROP TABLE IF EXISTS `cloud_drive_user_file`;
+CREATE TABLE `cloud_drive_user_file` (
+  `file_id` varchar(32) COLLATE utf8mb4_bin NOT NULL COMMENT '文件记录ID',
+  `user_id` varchar(32) COLLATE utf8mb4_bin NOT NULL COMMENT '用户ID',
+  `parent_id` varchar(32) COLLATE utf8mb4_bin NOT NULL COMMENT '上级文件夹ID,顶级文件夹为0',
+  `real_file_id` varchar(32) COLLATE utf8mb4_bin NOT NULL DEFAULT '0' COMMENT '真实文件id',
+  `filename` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '文件名',
+  `folder_flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否是文件夹 （0 否 1 是）',
+  `file_size_desc` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '文件大小展示字符',
+  `file_type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '文件类型（1 普通文件 2 压缩文件 3 excel 4 word 5 pdf 6 txt 7 图片 8 音频 9 视频 10 ppt 11 源码文件 12 csv）',
+  `del_flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除标识（0 否 1 是）',
+  `create_user` varchar(32) COLLATE utf8mb4_bin NOT NULL COMMENT '创建人',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_user` varchar(32) COLLATE utf8mb4_bin NOT NULL COMMENT '更新人',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`file_id`) USING BTREE,
+  KEY `index_file_list` (`user_id`,`del_flag`,`parent_id`,`file_type`,`file_id`,`filename`,`folder_flag`,`file_size_desc`,`create_time`,`update_time`) USING BTREE COMMENT '查询文件列表索引'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC COMMENT='用户文件信息表';
 
 -- ----------------------------
--- Table structure for user_third_info
+-- Table structure for cloud_drive_user_search_history
 -- ----------------------------
-DROP TABLE IF EXISTS `user_third_info`;
-CREATE TABLE `user_third_info` (
-  `user_third_info_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '用户第三方信息ID',
-  `third_open_id` varchar(35) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '第三方OpenID',
-  `third_avatar` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '第三方头像',
-  `type` int DEFAULT NULL COMMENT '第三方信息类型：1QQ;2微信;',
-  PRIMARY KEY (`user_third_info_id`),
-  KEY `user_third_info_id` (`user_third_info_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='用户第三方信息';
-
--- ----------------------------
--- Records of user_third_info
--- ----------------------------
-BEGIN;
-INSERT INTO `user_third_info` (`user_third_info_id`, `third_open_id`, `third_avatar`, `type`) VALUES ('3178033357', 'asdas', 'dasda', NULL);
-COMMIT;
+DROP TABLE IF EXISTS `cloud_drive_user_search_history`;
+CREATE TABLE `cloud_drive_user_search_history` (
+  `id` varchar(32) COLLATE utf8mb4_bin NOT NULL COMMENT '主键',
+  `user_id` varchar(32) COLLATE utf8mb4_bin NOT NULL COMMENT '用户id',
+  `search_content` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '搜索文案',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `uk_user_id_search_content_update_time` (`user_id`,`search_content`,`update_time`) USING BTREE COMMENT '用户id、搜索内容和更新时间唯一索引',
+  UNIQUE KEY `uk_user_id_search_content` (`user_id`,`search_content`) USING BTREE COMMENT '用户id和搜索内容唯一索引'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC COMMENT='用户搜索历史表';
 
 SET FOREIGN_KEY_CHECKS = 1;
