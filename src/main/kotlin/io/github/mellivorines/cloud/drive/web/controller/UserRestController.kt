@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*
  */
 @RestController
 @Validated
-@Tag(name = "文件接口")
+@Tag(name = "用户相关")
 @RequestMapping("/user")
 class UserRestController(private val userService: UserService) {
 
@@ -36,17 +36,17 @@ class UserRestController(private val userService: UserService) {
 
     /**
      * 登陆账号
-     * @param [userName]用户名
+     * @param [username]用户名
      * @param [password]密码
      * @return [ResultModel] 返回结果
      */
     @Operation(summary = "登陆")
     @GetMapping("login")
     fun login(
-        @RequestParam("userName") userName: String,
+        @RequestParam("username") username: String,
         @RequestParam("password") password: String
     ): ResultModel {
-        return userService.login(userName, password)
+        return userService.login(username, password)
     }
 
     /**
@@ -70,5 +70,71 @@ class UserRestController(private val userService: UserService) {
     @GetMapping("info")
     fun info(@RequestParam("userId") userId: String): ResultModel {
         return userService.info(userId)
+    }
+
+    /**
+     * 忘记密码-校验用户名
+     *
+     * @param [username] 用户名
+     * @return [ResultModel]返回结果
+     */
+    @Operation(summary = "忘记密码-校验用户名")
+    @GetMapping("username/check")
+    fun checkUsername(@RequestParam("username") username: String): ResultModel {
+        return userService.checkUsername(username)
+    }
+
+    /**
+     * 忘记密码-校验密保答案
+     *
+     * @param [username] 用户名
+     * @param [question]密保问题
+     * @param [answer]密保答案
+     * @return [ResultModel] 返回结果
+     */
+    @Operation(summary = "忘记密码-校验密保答案")
+    @GetMapping("answer/check")
+    fun checkAnswer(
+        @RequestParam("username") username: String,
+        @RequestParam("question") question: String,
+        @RequestParam("answer") answer: String,
+    ): ResultModel {
+        return userService.checkAnswer(username, question, answer)
+    }
+
+    /**
+     * 忘记密码-重置密码
+     *
+     * @param [username] 用户名
+     * @param [newPassword]新密码
+     * @param [token]token
+     * @return [ResultModel]返回结果
+     */
+    @Operation(summary = "忘记密码-重置密码")
+    @GetMapping("password/reset")
+    fun resetPassword(
+        @RequestParam("username") username: String,
+        @RequestParam("newPassword") newPassword: String,
+        @RequestParam("token") token: String,
+    ): ResultModel {
+        return userService.resetPassword(username, newPassword, token)
+    }
+
+    /**
+     * 用户修改密码
+     *
+     * @param [userId]用户ID
+     * @param [password]原始密码
+     * @param [newPassword] 新密码
+     * @return [ResultModel] 返回结果
+     */
+    @Operation(summary = "用户修改密码")
+    @GetMapping("password/change")
+    fun changePassword(
+        @RequestParam("userId") userId: String,
+        @RequestParam("password") password: String,
+        @RequestParam("newPassword") newPassword: String,
+    ): ResultModel {
+        return userService.changePassword(userId, password, newPassword)
     }
 }
