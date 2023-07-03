@@ -46,5 +46,10 @@ class GlobalExceptionHandler {
         val message = exception.message
         return fail("检查业务逻辑是否合理：$message")
     }
+    @ExceptionHandler(value = [BizException::class])
+    fun findBizException(exception: NullPointerException): ResultModel {
+        val message = exception.message
+        return fail("检查业务逻辑是否合理：$message")
+    }
 
 }

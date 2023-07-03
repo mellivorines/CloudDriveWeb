@@ -22,7 +22,7 @@ data class UserFileInput(
     /**
      *  文件记录ID */
     @Schema(description = " 文件记录ID ")
-    val fileId: String,
+    val fileId: String?,
 
     /**
      *  用户ID */
@@ -37,7 +37,7 @@ data class UserFileInput(
     /**
      *  真实文件id */
     @Schema(description = " 真实文件id ")
-    val realFileId: String,
+    val realFileId: String?,
 
     /**
      *  文件名 */
@@ -52,12 +52,12 @@ data class UserFileInput(
     /**
      *  文件大小展示字符 */
     @Schema(description = " 文件大小展示字符 ")
-    val fileSizeDesc: String,
+    val fileSizeDesc: String?,
 
     /**
      *  文件类型（1 普通文件 2 压缩文件 3 excel 4 word 5 pdf 6 txt 7 图片 8 音频 9 视频 10 ppt 11 源码文件 12 csv） */
     @Schema(description = " 文件类型（1 普通文件 2 压缩文件 3 excel 4 word 5 pdf 6 txt 7 图片 8 音频 9 视频 10 ppt 11 源码文件 12 csv） ")
-    val fileType: Int,
+    val fileType: Int?,
 
     /**
      *  删除标识（0 否 1 是） */
@@ -67,22 +67,22 @@ data class UserFileInput(
     /**
      *  创建人 */
     @Schema(description = " 创建人 ")
-    val createUser: String,
+    val createUser: String?,
 
     /**
      *  创建时间 */
     @Schema(description = " 创建时间 ")
-    val createTime: LocalDateTime,
+    val createTime: LocalDateTime?,
 
     /**
      *  更新人 */
     @Schema(description = " 更新人 ")
-    val updateUser: String,
+    val updateUser: String?,
 
     /**
      *  更新时间 */
     @Schema(description = " 更新时间 ")
-    val updateTime: LocalDateTime,
+    val updateTime: LocalDateTime?
 
     ) : Input<UserFile> {
 

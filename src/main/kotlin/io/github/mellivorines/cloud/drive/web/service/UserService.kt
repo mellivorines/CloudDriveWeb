@@ -8,11 +8,13 @@ import io.github.mellivorines.cloud.drive.web.dao.repository.UserRepository
 import io.github.mellivorines.cloud.drive.web.enum.ResponseCode
 import io.github.mellivorines.cloud.drive.web.exception.BizException
 import io.github.mellivorines.cloud.drive.web.model.ResultModel
+import io.github.mellivorines.cloud.drive.web.model.fail
 import io.github.mellivorines.cloud.drive.web.model.success
 import io.github.mellivorines.cloud.drive.web.utils.JwtUtil
 import io.github.mellivorines.cloud.drive.web.utils.PasswordUtil
 import io.github.mellivorines.cloud.drive.web.utils.UUIDUtil
 import org.apache.commons.lang3.ObjectUtils
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -26,6 +28,10 @@ import java.util.*
  */
 @Service
 class UserService(private val userRepository: UserRepository, private val cacheManager: CacheManager) {
+
+    @Autowired
+    private lateinit var userFileService: UserFileService
+
     /**
      * 用户注册
      *
@@ -34,9 +40,25 @@ class UserService(private val userRepository: UserRepository, private val cacheM
      */
     fun register(userInput: UserInput): ResultModel {
         val user = assembleUser(userInput)
-        val save = userRepository.save(user)
-//        createUserRootFolder(user)
-        return success(save)
+        val findByUsername = userRepository.findByUsername(user.username)
+        return if (ObjectUtils.isEmpty(findByUsername)) {
+            val save = userRepository.save(user)
+            createUserRootFolder(save)
+            success(save)
+        } else {
+            BizException(msg = "用户已经存在！")
+            fail("用户已经存在!")
+        }
+
+    }
+
+    private fun createUserRootFolder(user: User) {
+        user.userId.let {
+            userFileService.createFolder(
+                CommonConstant.ZERO_LONG.toString(), CommonConstant.ALL_FILE_CN_STR,
+                it
+            )
+        }
     }
 
     /**
@@ -48,7 +70,11 @@ class UserService(private val userRepository: UserRepository, private val cacheM
      */
     fun login(username: String, password: String): ResultModel {
         val user = checkUsernameAndPassword(username, password)
-        return generateAndSaveToken(user)
+        return if (user == null) {
+            fail("用户名或密码错误！")
+        } else {
+            generateAndSaveToken(user)
+        }
     }
 
 
@@ -62,8 +88,7 @@ class UserService(private val userRepository: UserRepository, private val cacheM
         try {
             cacheManager.delete(CommonConstant.USER_LOGIN_PREFIX + userId)
         } catch (e: Exception) {
-            e.printStackTrace()
-            throw BizException(msg = "登出失败")
+            BizException(msg = "登出失败")
         }
         return success("退出成功！")
     }
@@ -88,10 +113,12 @@ class UserService(private val userRepository: UserRepository, private val cacheM
      */
     fun checkUsername(username: String): ResultModel {
         val findByUsername = userRepository.findByUsername(username)
-        if (ObjectUtils.isEmpty(findByUsername)) {
-            throw BizException(msg = "没有此用户!")
+        return if (findByUsername == null) {
+            BizException(msg = "没有此用户!")
+            fail("没有此用户!")
+        } else {
+            success(findByUsername.question)
         }
-        return success(findByUsername.question)
     }
 
     /**
@@ -106,7 +133,7 @@ class UserService(private val userRepository: UserRepository, private val cacheM
         val findByUsernameAndQuestionAndAnswer =
             userRepository.findByUsernameAndQuestionAndAnswer(username, question, answer)
         if (ObjectUtils.isEmpty(findByUsernameAndQuestionAndAnswer)) {
-            throw BizException(msg = "密保答案错误")
+            BizException(msg = "密保答案错误")
         }
         return success(generateAndSaveCheckAnswerToken(username))
     }
@@ -122,11 +149,13 @@ class UserService(private val userRepository: UserRepository, private val cacheM
      */
     fun resetPassword(username: String, newPassword: String, token: String): ResultModel {
         val findByUsername = userRepository.findByUsername(username)
-        if (ObjectUtils.isEmpty(findByUsername)) {
-            throw BizException(msg = "用户不存在！")
+        return if (findByUsername == null) {
+            BizException(msg = "用户不存在！")
+            fail("用户不存在!")
+        } else {
+            checkResetPasswordToken(username, token)
+            doChangeOrResetPassword(findByUsername, newPassword)
         }
-        checkResetPasswordToken(username, token)
-        return doChangeOrResetPassword(findByUsername, newPassword)
     }
 
     /**
@@ -139,13 +168,23 @@ class UserService(private val userRepository: UserRepository, private val cacheM
      */
     fun changePassword(userId: String, password: String, newPassword: String): ResultModel {
         val findByUserIdAndPassword = userRepository.findByUserIdAndPassword(userId, password)
-        if (ObjectUtils.isEmpty(findByUserIdAndPassword)) {
-            throw BizException(msg = "用户名错误")
+        if (findByUserIdAndPassword == null) {
+            BizException(msg = "用户名错误")
+        } else {
+            if (password != PasswordUtil.encryptPassword(
+                    findByUserIdAndPassword.salt,
+                    findByUserIdAndPassword.password
+                )
+            ) {
+                BizException(msg = "密码错误")
+            }
         }
-        if (password != PasswordUtil.encryptPassword(findByUserIdAndPassword.salt, findByUserIdAndPassword.password)) {
-            throw BizException(msg = "密码错误")
+        return if (findByUserIdAndPassword != null) {
+            doChangeOrResetPassword(findByUserIdAndPassword, newPassword)
+        } else {
+            fail("用户不存在！")
         }
-        return doChangeOrResetPassword(findByUserIdAndPassword, newPassword)
+
     }
 
     /**
@@ -181,10 +220,10 @@ class UserService(private val userRepository: UserRepository, private val cacheM
     private fun checkResetPasswordToken(username: String, token: String) {
         val cacheToken = cacheManager[CommonConstant.USER_FORGET_PREFIX + username]
         if (Objects.isNull(cacheToken)) {
-            throw BizException(ResponseCode.TOKEN_EXPIRE.code, ResponseCode.TOKEN_EXPIRE.msg)
+            BizException(ResponseCode.TOKEN_EXPIRE.code, ResponseCode.TOKEN_EXPIRE.msg)
         }
         if (cacheToken != token) {
-            throw BizException(msg = "token错误")
+            BizException(msg = "token错误")
         }
     }
 
@@ -239,14 +278,18 @@ class UserService(private val userRepository: UserRepository, private val cacheM
      * @param [password]密码
      * @return [User]用户信息
      */
-    private fun checkUsernameAndPassword(username: String, password: String): User {
+    private fun checkUsernameAndPassword(username: String, password: String): User? {
         val findByUserName = userRepository.findByUsername(username)
-        if (ObjectUtils.isEmpty(findByUserName)) {
-            throw BizException(msg = "用户名错误")
+        if (findByUserName == null) {
+            BizException(msg = "用户名错误")
+            return null
+        } else {
+            if (findByUserName.password != PasswordUtil.encryptPassword(findByUserName.salt, password)) {
+                BizException(msg = "密码错误")
+                return null
+            } else {
+                return findByUserName
+            }
         }
-        if (findByUserName.password != PasswordUtil.encryptPassword(findByUserName.salt, password)) {
-            throw BizException(msg = "密码错误")
-        }
-        return findByUserName
     }
 }
