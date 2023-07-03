@@ -12,5 +12,5 @@ package io.github.mellivorines.cloud.drive.web.common.annotation
 @MustBeDocumented
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY_GETTER, AnnotationTarget.PROPERTY_SETTER)
-annotation class NeedLogin()
+annotation class NeedLogin
 
