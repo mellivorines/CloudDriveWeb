@@ -19,16 +19,18 @@ interface UserFileRepository : KRepository<UserFile, String> {
     fun findByUserIdAndFileTypeAndParentIdAndDelFlag(
         userId: String,
         fileTypeArray: List<Int>?,
-        parentId: String,
+        parentId: String?,
         delFlag: Int
-    ): List<UserFile> {
+    ): List<UserFile>? {
         return sql
             .createQuery(UserFile::class) {
                 where(table.userId eq(userId) )
                 fileTypeArray?.let {
                     where(table.fileType valueIn it)
                 }
-                where(table.parentId eq(parentId) )
+                parentId?.let {
+                    where(table.parentId eq(it) )
+                }
                 where(table.delFlag eq(delFlag) )
                 select(table)
             }
