@@ -11,6 +11,7 @@ import io.github.mellivorines.cloud.drive.web.model.tree.FolderTreeNode
 import io.github.mellivorines.cloud.drive.web.storage.core.StorageManager
 import io.github.mellivorines.cloud.drive.web.utils.FileUtil
 import io.github.mellivorines.cloud.drive.web.utils.HttpUtil
+import io.github.mellivorines.cloud.drive.web.utils.MyUUIDIdGenerator
 import io.github.mellivorines.cloud.drive.web.utils.StringListUtil.string2IntegerList
 import io.github.mellivorines.cloud.drive.web.utils.type.context.FileTypeContext.getFileTypeCode
 import jakarta.servlet.http.HttpServletResponse
@@ -631,7 +632,7 @@ class UserFileService(
             )
             handleDuplicateFileName(userFileInput)
             if (checkIsFolder(userFile)) {
-                assembleAllChildUserFile(userFile, userFile.fileId, newFileId, userId)
+                assembleAllChildUserFile(toBeCopiedFileInfoList, userFile.parentId, MyUUIDIdGenerator.generateUUid(), userId)
             }
             allChildUserFileList.add(userFileInput)
         }
@@ -655,15 +656,15 @@ class UserFileService(
     ) {
         val childUserFileList: List<UserFile> = userFileRepository.findFolderListByParentId(parentUserFileId) ?: return
         childUserFileList.stream().forEach { userFile: UserFile ->
-            val fileId: String = userFile.getFileId()
-            val newFileId: String = IdGenerator.nextId()
-            userFile.setParentId(newParentUserFileId)
-            userFile.setUserId(userId)
-            userFile.setFileId(newFileId)
-            userFile.setCreateUser(userId)
-            userFile.setCreateTime(Date())
-            userFile.setUpdateUser(userId)
-            userFile.setUpdateTime(Date())
+            val fileId: String = userFile.fileId
+            val newFileId: String = MyUUIDIdGenerator.generateUUid()
+//            userFile.setParentId(newParentUserFileId)
+//            userFile.setUserId(userId)
+//            userFile.setFileId(newFileId)
+//            userFile.setCreateUser(userId)
+//            userFile.setCreateTime(Date())
+//            userFile.setUpdateUser(userId)
+//            userFile.setUpdateTime(Date())
             allChildUserFileList.add(userFile)
             if (checkIsFolder(userFile)) {
                 assembleAllChildUserFile(allChildUserFileList, fileId, newFileId, userId)

@@ -16,4 +16,11 @@ class MyUUIDIdGenerator : UserIdGenerator<String> {
     override fun generate(entityType: Class<*>?): String {
         return UUID.randomUUID().toString().replace("-", "")
     }
+
+
+    companion object {
+        fun generateUUid():String {
+            return UUID.randomUUID().toString().replace("-", "")
+        }
+    }
 }
