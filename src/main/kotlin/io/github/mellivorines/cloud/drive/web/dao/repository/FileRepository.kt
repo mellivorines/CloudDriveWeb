@@ -14,6 +14,6 @@ import org.springframework.stereotype.Repository
  */
 @Repository
 interface FileRepository : KRepository<File, String> {
-
+fun findByMd5(md5: String): List<File>?
 }
 
