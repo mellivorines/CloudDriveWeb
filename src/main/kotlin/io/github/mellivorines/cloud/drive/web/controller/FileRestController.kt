@@ -6,6 +6,7 @@ import io.github.mellivorines.cloud.drive.web.model.ResultModel
 import io.github.mellivorines.cloud.drive.web.model.fail
 import io.github.mellivorines.cloud.drive.web.model.success
 import io.github.mellivorines.cloud.drive.web.model.vo.FileUploadVO
+import io.github.mellivorines.cloud.drive.web.model.vo.TransferAndCopyVO
 import io.github.mellivorines.cloud.drive.web.service.UserFileService
 import io.github.mellivorines.cloud.drive.web.utils.UserIdUtil
 import io.swagger.v3.oas.annotations.Operation
@@ -13,7 +14,6 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
-import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 
 
@@ -109,8 +109,8 @@ class FileRestController(private val userFileService: UserFileService) {
                     fileUploadVO.parentId,
                     fileUploadVO.userId,
                     fileUploadVO.md5,
-                    fileUploadVO.chunks,
-                    fileUploadVO.chunk,
+                    fileUploadVO.chunks!!,
+                    fileUploadVO.chunk!!,
                     fileUploadVO.size,
                     fileUploadVO.name
                 )
@@ -135,12 +135,12 @@ class FileRestController(private val userFileService: UserFileService) {
     @Operation(summary = "秒传文件")
     @PostMapping("file/sec-upload")
     @NeedLogin
-    fun secUpload(@Validated @RequestBody fileSecUploadPO: FileSecUploadPO): ResultModel {
+    fun secUpload(@Validated @RequestBody fileSecUploadPO: FileUploadVO): ResultModel {
         return if (userFileService.secUpload(
-                fileSecUploadPO.getParentId(),
-                fileSecUploadPO.getName(),
-                fileSecUploadPO.getMd5(),
-                UserIdUtil.get()
+                fileSecUploadPO.parentId,
+                fileSecUploadPO.name,
+                fileSecUploadPO.md5,
+                fileSecUploadPO.userId
             )
         ) {
             success("上传成功")
@@ -157,10 +157,11 @@ class FileRestController(private val userFileService: UserFileService) {
     @GetMapping("file/download")
     @NeedLogin
     fun download(
-        @RequestParam(value = "fileId", required = false) fileId: @NotNull(message = "请选择要下载的文件") Long?,
-        response: HttpServletResponse?
+        @RequestParam(value = "fileId", required = false) fileId: String,
+        @RequestParam(value = "userId", required = false) userId: String,
+        response: HttpServletResponse
     ) {
-        userFileService.download(fileId, response, UserIdUtil.get())
+        userFileService.download(fileId, response, userId)
     }
 
     /**
@@ -171,26 +172,28 @@ class FileRestController(private val userFileService: UserFileService) {
     @Operation(summary = "获取文件夹树")
     @GetMapping("file/folder/tree")
     @NeedLogin
-    fun getFolderTree(): ResultModel {
-        return success(userFileService.getFolderTree(UserIdUtil.get()))
+    fun getFolderTree(
+        @RequestParam(value = "userId", required = false) userId: String
+    ): ResultModel {
+        return success(userFileService.getFolderTree(userId))
     }
 
     /**
      * 转移文件(批量)
      *
-     * @param transferPO
+     * @param transferAndCopyVO
      * @return
      */
     @Operation(summary = "转移文件(批量)")
     @PostMapping("file/transfer")
     @NeedLogin
-    fun transfer(@Validated @RequestBody transferPO: TransferPO): ResultModel {
+    fun transfer(@Validated @RequestBody transferAndCopyVO: TransferAndCopyVO): ResultModel {
         return success(
             userFileService.transfer(
-                transferPO.getFileIds(),
-                transferPO.getParentId(),
-                transferPO.getTargetParentId(),
-                UserIdUtil.get()
+                transferAndCopyVO.fileIds,
+                transferAndCopyVO.parentId,
+                transferAndCopyVO.targetParentId,
+                transferAndCopyVO.userId
             )
         )
     }
@@ -198,19 +201,19 @@ class FileRestController(private val userFileService: UserFileService) {
     /**
      * 复制文件(批量)
      *
-     * @param copyPO
+     * @param copyVO
      * @return
      */
     @Operation(summary = "复制文件(批量)")
     @PostMapping("file/copy")
     @NeedLogin
-    fun copy(@Validated @RequestBody copyPO: CopyPO): ResultModel {
+    fun copy(@Validated @RequestBody copyVO: TransferAndCopyVO): ResultModel {
         return success(
             userFileService.copy(
-                copyPO.getFileIds(),
-                copyPO.getParentId(),
-                copyPO.getTargetParentId(),
-                UserIdUtil.get()
+                copyVO.fileIds,
+                copyVO.parentId,
+                copyVO.targetParentId,
+                copyVO.userId,
             )
         )
     }
@@ -226,10 +229,11 @@ class FileRestController(private val userFileService: UserFileService) {
     @GetMapping("file/search")
     @NeedLogin
     fun search(
-        @RequestParam(value = "keyword", required = false) keyword: @NotBlank(message = "关键字不能为空") String?,
-        @RequestParam(name = "fileTypes", required = false, defaultValue = "-1") fileTypes: String?
+        @RequestParam(value = "keyword", required = false) keyword: String,
+        @RequestParam(value = "userId", required = false) userId: String,
+        @RequestParam(name = "fileTypes", required = false, defaultValue = "-1") fileTypes: String
     ): ResultModel {
-        return success(userFileService.search(keyword, fileTypes, UserIdUtil.get()))
+        return success(userFileService.search(keyword, fileTypes, userId))
     }
 
     /**
@@ -242,12 +246,10 @@ class FileRestController(private val userFileService: UserFileService) {
     @GetMapping("file")
     @NeedLogin
     fun detail(
-        @RequestParam(
-            value = "fileId",
-            required = false
-        ) fileId: @NotNull(message = "文件id不能为空") Long?
+        @RequestParam(value = "fileId", required = false) fileId: String,
+        @RequestParam(value = "userId", required = false) userId: String
     ): ResultModel {
-        return success(userFileService.detail(fileId, UserIdUtil.get()))
+        return success(userFileService.detail(fileId, userId))
     }
 
     /**
@@ -259,12 +261,10 @@ class FileRestController(private val userFileService: UserFileService) {
     @GetMapping("file/breadcrumbs")
     @NeedLogin
     fun getBreadcrumbs(
-        @RequestParam(
-            value = "fileId",
-            required = false
-        ) fileId: @NotNull(message = "文件id不能为空") Long?
+        @RequestParam(value = "fileId", required = false) fileId: String,
+        @RequestParam(value = "userId", required = false) userId: String
     ): ResultModel {
-        return success(userFileService.getBreadcrumbs(fileId, UserIdUtil.get()))
+        return success(userFileService.getBreadcrumbs(fileId, userId))
     }
 
     /**
@@ -277,9 +277,10 @@ class FileRestController(private val userFileService: UserFileService) {
     @GetMapping("preview")
     @NeedLogin
     fun preview(
-        @RequestParam(value = "fileId", required = false) fileId: @NotNull(message = "文件id不能为空") Long?,
-        response: HttpServletResponse?
+        @RequestParam(value = "fileId", required = false) fileId: String,
+        @RequestParam(value = "userId", required = false) userId: String,
+        response: HttpServletResponse
     ) {
-        userFileService.preview(fileId, response, UserIdUtil.get())
+        userFileService.preview(fileId, response, userId)
     }
 }
