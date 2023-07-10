@@ -51,7 +51,7 @@ object CommonConstant {
     const val CONTENT_DISPOSITION_VALUE_PREFIX_STR = "attachment;fileName="
     const val GB2312_STR = "GB2312"
     const val IOS_8859_1_STR = "ISO-8859-1"
-    val SEPARATOR_STR = File.separator
+    val SEPARATOR_STR: String = File.separator
     const val CN_LEFT_PARENTHESES_STR = "（"
     const val CN_RIGHT_PARENTHESES_STR = "）"
     const val ALL_FILE_CN_STR = "全部文件"

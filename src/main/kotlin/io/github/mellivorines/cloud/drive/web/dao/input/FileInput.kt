@@ -22,7 +22,7 @@ data class FileInput(
     /**
      *  文件id */
     @Schema(description = " 文件id ")
-    val fileId: String,
+    val fileId: String?,
 
     /**
      *  文件名称 */
@@ -67,7 +67,7 @@ data class FileInput(
     /**
      *  创建时间 */
     @Schema(description = " 创建时间 ")
-    val createTime: LocalDateTime,
+    val createTime: LocalDateTime?,
 
     ) : Input<File> {
 

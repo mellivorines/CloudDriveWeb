@@ -11,7 +11,7 @@ import java.util.*
  * @since 2023/6/30
  */
 object UserIdUtil {
-    const val ZERO_LONG = 0L
+    private const val ZERO_LONG = 0L
     private val threadLocal = ThreadLocal<Long>()
 
     /**

@@ -13,7 +13,7 @@ import java.util.*
  * @since 2023/6/29
  */
 object JwtUtil {
-    const val TWO_LONG = 2L
+    private const val TWO_LONG = 2L
     const val EMPTY_STR = ""
 
     /**

@@ -1,6 +1,5 @@
 package io.github.mellivorines.cloud.drive.web.service
 
-import io.github.mellivorines.cloud.drive.web.dao.entity.UserFile
 import io.github.mellivorines.cloud.drive.web.dao.entity.UserSearchHistory
 import io.github.mellivorines.cloud.drive.web.dao.input.UserSearchHistoryInput
 import io.github.mellivorines.cloud.drive.web.dao.repository.UserSearchHistoryRepository

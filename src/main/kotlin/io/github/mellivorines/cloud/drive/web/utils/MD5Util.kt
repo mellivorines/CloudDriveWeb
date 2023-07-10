@@ -12,9 +12,9 @@ import java.util.*
  * @since 2023/6/29
  */
 object MD5Util {
-    const val UTF_8_STR = "UTF-8"
+    private const val UTF_8_STR = "UTF-8"
     private const val MD5_STR = "MD5"
-    const val ZERO_STR = "0"
+    private const val ZERO_STR = "0"
 
     /**
      * 获取md5加密串
@@ -44,7 +44,7 @@ object MD5Util {
      * @param bytes
      * @return
      */
-    fun bytesToHex(bytes: ByteArray): String {
+    private fun bytesToHex(bytes: ByteArray): String {
         val hexStr = StringBuffer()
         var num: Int
         for (i in bytes.indices) {

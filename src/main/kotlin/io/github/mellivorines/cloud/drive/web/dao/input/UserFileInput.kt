@@ -42,7 +42,7 @@ data class UserFileInput(
     /**
      *  文件名 */
     @Schema(description = " 文件名 ")
-    val filename: String,
+    var filename: String,
 
     /**
      *  是否是文件夹 （0 否 1 是） */

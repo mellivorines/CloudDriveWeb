@@ -28,9 +28,6 @@ import java.util.concurrent.TimeUnit
 )
 class RedisUtil {
 
-    //    @Autowired(required=true)
-//    @Qualifier(value = "redisTemplate")
-//    private lateinit var redisTemplate: RedisTemplate<Any, Any>
     @Autowired
     private lateinit var redisTemplate: StringRedisTemplate
 

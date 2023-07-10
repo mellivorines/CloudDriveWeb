@@ -11,9 +11,7 @@ import io.github.mellivorines.cloud.drive.web.model.tree.FolderTreeNode
 import io.github.mellivorines.cloud.drive.web.storage.core.StorageManager
 import io.github.mellivorines.cloud.drive.web.utils.FileUtil
 import io.github.mellivorines.cloud.drive.web.utils.HttpUtil
-import io.github.mellivorines.cloud.drive.web.utils.StringListUtil
 import io.github.mellivorines.cloud.drive.web.utils.StringListUtil.string2IntegerList
-import io.github.mellivorines.cloud.drive.web.utils.type.context.FileTypeContext
 import io.github.mellivorines.cloud.drive.web.utils.type.context.FileTypeContext.getFileTypeCode
 import jakarta.servlet.http.HttpServletResponse
 import org.apache.commons.collections.CollectionUtils
@@ -24,8 +22,6 @@ import org.springframework.web.multipart.MultipartFile
 import java.io.UnsupportedEncodingException
 import java.nio.charset.Charset
 import java.util.*
-import java.util.function.Consumer
-import java.util.function.Predicate
 import java.util.stream.Collectors
 
 
@@ -82,7 +78,7 @@ class UserFileService(
         var fileTypeArray: List<Int>? = null
         if (CommonConstant.ZERO_LONG.toString() == parentId) return Lists.newArrayList()
         if (fileTypes != CommonConstant.ALL_FILE_TYPE) {
-            fileTypeArray = StringListUtil.string2IntegerList(fileTypes)
+            fileTypeArray = string2IntegerList(fileTypes)
         }
 
         return userFileRepository.findByUserIdAndFileTypeAndParentIdAndDelFlag(userId, fileTypeArray, parentId, delFlag)
@@ -205,7 +201,7 @@ class UserFileService(
                 parentId,
                 name,
                 CommonConstant.FolderFlagEnum.NO.code,
-                FileTypeContext.getFileTypeCode(name),
+                getFileTypeCode(name),
                 panFile.fileId,
                 userId,
                 null
@@ -232,7 +228,7 @@ class UserFileService(
                 parentId,
                 filename!!,
                 CommonConstant.FolderFlagEnum.NO.code,
-                FileTypeContext.getFileTypeCode(filename),
+                getFileTypeCode(filename),
                 panFile.fileId,
                 userId,
                 null
@@ -379,7 +375,7 @@ class UserFileService(
      */
     private fun assembleFolderTree(folderList: List<UserFile>): List<FolderTreeNode> {
         if (CollectionUtils.isEmpty(folderList)) {
-            return Lists.newArrayList<FolderTreeNode>()
+            return Lists.newArrayList()
         }
         val folderTreeNodeList: List<FolderTreeNode> = folderList.map {
             assembleFolderTreeNode(it)
@@ -393,9 +389,9 @@ class UserFileService(
                 node.childrens = children
             }
         }
-        return folderTreeNodeList.stream().filter(Predicate<FolderTreeNode> { node: FolderTreeNode ->
+        return folderTreeNodeList.stream().filter { node: FolderTreeNode ->
             CommonConstant.ZERO_LONG.toString() == node.parentId
-        }).collect(Collectors.toList())
+        }.collect(Collectors.toList())
     }
 
     /**
@@ -410,7 +406,7 @@ class UserFileService(
     fun secUpload(parentId: String, filename: String, md5: String, userId: String): Boolean {
         val fileList = fileService.getFileListByMd5(md5)
         return if (fileList != null) {
-            val panFile = fileList.get(CommonConstant.ZERO_INT)
+            val panFile = fileList[CommonConstant.ZERO_INT]
             saveUserFile(
                 parentId,
                 filename,
@@ -507,19 +503,19 @@ class UserFileService(
                 CommonConstant.DelFlagEnum.NO.code
             )
         val noDuplicateFileNameFlag =
-            rPanUserFileVOList?.stream()?.noneMatch(Predicate<UserFile> { rPanUserFileVO: UserFile ->
+            rPanUserFileVOList?.stream()?.noneMatch { rPanUserFileVO: UserFile ->
                 userFile.filename == rPanUserFileVO.filename
-            })
+            }
         if (noDuplicateFileNameFlag == true) {
             return
         }
         val duplicateFileNameList = rPanUserFileVOList?.stream()
-            ?.map<String>(UserFile::filename)
-            ?.filter(Predicate { fileName: String ->
+            ?.map(UserFile::filename)
+            ?.filter { fileName: String ->
                 fileName.startsWith(
                     newFileNameWithoutSuffix
                 )
-            })
+            }
             ?.filter { fileName: String ->
                 val pointPosition: Int = fileName.lastIndexOf(CommonConstant.POINT_STR)
                 var fileNameSuffix = CommonConstant.EMPTY_STR
@@ -617,7 +613,7 @@ class UserFileService(
         userId: String
     ): List<UserFileInput> {
         val allChildUserFileList: MutableList<UserFileInput> = mutableListOf()
-        toBeCopiedFileInfoList.stream().forEach(Consumer<UserFile> { userFile: UserFile ->
+        toBeCopiedFileInfoList.stream().forEach { userFile: UserFile ->
             val userFileInput = UserFileInput(
                 null,
                 userFile.userId,
@@ -638,7 +634,7 @@ class UserFileService(
                 assembleAllChildUserFile(userFile, userFile.fileId, newFileId, userId)
             }
             allChildUserFileList.add(userFileInput)
-        })
+        }
         return allChildUserFileList
     }
 
@@ -658,7 +654,7 @@ class UserFileService(
         userId: String
     ) {
         val childUserFileList: List<UserFile> = userFileRepository.findFolderListByParentId(parentUserFileId) ?: return
-        childUserFileList.stream().forEach(Consumer<UserFile> { userFile: UserFile ->
+        childUserFileList.stream().forEach { userFile: UserFile ->
             val fileId: String = userFile.getFileId()
             val newFileId: String = IdGenerator.nextId()
             userFile.setParentId(newParentUserFileId)
@@ -672,7 +668,7 @@ class UserFileService(
             if (checkIsFolder(userFile)) {
                 assembleAllChildUserFile(allChildUserFileList, fileId, newFileId, userId)
             }
-        })
+        }
     }
 
     /**
@@ -689,7 +685,7 @@ class UserFileService(
             if (!CollectionUtils.isEmpty(allChildrenFile)) {
                 val childFolderIdList =
                     allChildrenFile.stream().filter(this::checkIsFolder).map<Any>(UserFile::fileId).collect(
-                        Collectors.toList<Any>()
+                        Collectors.toList()
                     )
                 if (childFolderIdList.contains(targetParentId)) {
                     return true
@@ -706,26 +702,22 @@ class UserFileService(
      * @param parentId
      */
     private fun findAllChildUserFile(allChildUserFileList: MutableList<UserFile>, parentId: String) {
-        val childUserFileList: List<UserFile>? = userFileRepository.findFolderListByParentId(parentId)
-        if (childUserFileList == null) {
-            return
-        }
+        val childUserFileList: List<UserFile> = userFileRepository.findFolderListByParentId(parentId) ?: return
         allChildUserFileList.addAll(childUserFileList)
         childUserFileList.stream()
-            .filter(Predicate<UserFile> { rPanUserFile: UserFile -> checkIsFolder(rPanUserFile) })
-            .forEach(Consumer<UserFile> { rPanUserFile: UserFile ->
+            .filter { rPanUserFile: UserFile -> checkIsFolder(rPanUserFile) }
+            .forEach { rPanUserFile: UserFile ->
                 findAllChildUserFile(
                     allChildUserFileList,
                     rPanUserFile.fileId
                 )
-            })
+            }
     }
 
     /**
      * 拼装树节点
-     *
-     * @param rPanUserFile
-     * @return
+     * @param [userFile]
+     * @return [FolderTreeNode]
      */
     private fun assembleFolderTreeNode(userFile: UserFile): FolderTreeNode {
         return FolderTreeNode(
@@ -826,9 +818,8 @@ class UserFileService(
 
     /**
      * 校验是不是文件夹
-     *
-     * @param rPanUserFile
-     * @return
+     * @param [userFile]
+     * @return [Boolean]
      */
     private fun checkIsFolder(userFile: UserFile): Boolean {
 

@@ -14,6 +14,6 @@ import org.springframework.stereotype.Repository
  */
 @Repository
 interface UserSearchHistoryRepository : KRepository<UserSearchHistory, String> {
-fun findByUserIdOrderByUpdateTime(userId: String): List<UserSearchHistory>?
+    fun findByUserIdOrderByUpdateTime(userId: String): List<UserSearchHistory>?
 }
 

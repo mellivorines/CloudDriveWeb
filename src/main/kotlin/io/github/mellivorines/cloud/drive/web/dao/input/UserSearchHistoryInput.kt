@@ -22,27 +22,27 @@ data class UserSearchHistoryInput(
     /**
      *  主键 */
     @Schema(description = " 主键 ")
-    val id: String,
+    var id: String?,
 
     /**
      *  用户id */
     @Schema(description = " 用户id ")
-    val userId: String,
+    var userId: String,
 
     /**
      *  搜索文案 */
     @Schema(description = " 搜索文案 ")
-    val searchContent: String,
+    var searchContent: String,
 
     /**
      *  创建时间 */
     @Schema(description = " 创建时间 ")
-    val createTime: LocalDateTime,
+    var createTime: LocalDateTime?,
 
     /**
      *  更新时间 */
     @Schema(description = " 更新时间 ")
-    val updateTime: LocalDateTime,
+    var updateTime: LocalDateTime?,
 
     ) : Input<UserSearchHistory> {
 

@@ -86,7 +86,7 @@ object FileUtil {
      * @param md5
      * @return
      */
-    fun generateTempFilename(originFilename: String?, md5: String?): String {
+    private fun generateTempFilename(originFilename: String?, md5: String?): String {
         return StringBuffer(originFilename).append(COMMON_SEPARATOR).append(md5).toString()
     }
 
@@ -217,13 +217,13 @@ object FileUtil {
     fun getFileSizeDesc(size: Long): String {
         var fileSize = size.toDouble()
         var fileSizeSuffix = KB_STR
-        fileSize = fileSize / UNIT
+        fileSize /= UNIT
         if (fileSize >= UNIT) {
-            fileSize = fileSize / UNIT
+            fileSize /= UNIT
             fileSizeSuffix = MB_STR
         }
         if (fileSize >= UNIT) {
-            fileSize = fileSize / UNIT
+            fileSize /= UNIT
             fileSizeSuffix = GB_STR
         }
         return String.format(FILE_SIZE_DESC_FORMAT, fileSize) + fileSizeSuffix

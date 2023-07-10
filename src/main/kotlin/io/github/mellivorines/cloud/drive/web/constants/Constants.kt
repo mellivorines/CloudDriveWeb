@@ -50,7 +50,7 @@ object Constants {
     /**
      * 过期时间5分钟
      */
-    val REDIS_KEY_EXPIRES_FIVE_MIN: Int = REDIS_KEY_EXPIRES_ONE_MIN * 5
+    const val REDIS_KEY_EXPIRES_FIVE_MIN: Int = REDIS_KEY_EXPIRES_ONE_MIN * 5
     const val REDIS_KEY_DOWNLOAD = "clouddrive:download:"
     const val REDIS_KEY_SYS_SETTING = "clouddrive:syssetting:"
     const val REDIS_KEY_USER_SPACE_USE = "clouddrive:user:spaceuse:"

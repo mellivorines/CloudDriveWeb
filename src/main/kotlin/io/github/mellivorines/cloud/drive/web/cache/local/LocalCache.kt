@@ -26,12 +26,12 @@ class LocalCache : Cache, Serializable {
     /**
      * 缓存池
      */
-    private val CACHE_POOL: MutableMap<Any, Any> = ConcurrentHashMap()
+    private val cachePool: MutableMap<Any, Any> = ConcurrentHashMap()
 
     /**
      * key的过期池
      */
-    private val EXPIRE_POOL: MutableMap<Any, Long> = ConcurrentHashMap()
+    private val expirePoll: MutableMap<Any, Long> = ConcurrentHashMap()
 
     /**
      * 根据key获取缓存数据
@@ -40,13 +40,13 @@ class LocalCache : Cache, Serializable {
      * @return
      */
     override operator fun get(key: Any): Any? {
-        var value = CACHE_POOL[key]
+        var value = cachePool[key]
         if (Objects.isNull(value)) {
             return value
         }
-        val longTime = EXPIRE_POOL[key]
+        val longTime = expirePoll[key]
         if (FOREVER_SIGN != longTime) {
-            val expireDate = Date(EXPIRE_POOL[key]!!)
+            val expireDate = Date(expirePoll[key]!!)
             if (Date().after(expireDate)) {
                 delete(key)
                 value = null
@@ -62,8 +62,8 @@ class LocalCache : Cache, Serializable {
      * @param value
      */
     override fun put(key: Any, value: Any) {
-        CACHE_POOL[key] = value
-        EXPIRE_POOL[key] = FOREVER_SIGN
+        cachePool[key] = value
+        expirePoll[key] = FOREVER_SIGN
     }
 
     /**
@@ -74,7 +74,7 @@ class LocalCache : Cache, Serializable {
      * @param expire
      */
     override fun put(key: Any, value: Any, expire: Long) {
-        CACHE_POOL[key] = value
+        cachePool[key] = value
         setExpire(key, expire)
     }
 
@@ -87,7 +87,7 @@ class LocalCache : Cache, Serializable {
     override fun setExpire(key: Any, expire: Long) {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.SECOND, (expire / 1000).toInt())
-        EXPIRE_POOL[key] = calendar.time.time
+        expirePoll[key] = calendar.time.time
     }
 
     /**
@@ -96,8 +96,8 @@ class LocalCache : Cache, Serializable {
      * @param key
      */
     override fun delete(key: Any) {
-        CACHE_POOL.remove(key)
-        EXPIRE_POOL.remove(key)
+        cachePool.remove(key)
+        expirePoll.remove(key)
     }
 
     companion object {

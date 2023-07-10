@@ -8,7 +8,6 @@ import io.github.mellivorines.cloud.drive.web.model.success
 import io.github.mellivorines.cloud.drive.web.model.vo.FileUploadVO
 import io.github.mellivorines.cloud.drive.web.model.vo.TransferAndCopyVO
 import io.github.mellivorines.cloud.drive.web.service.UserFileService
-import io.github.mellivorines.cloud.drive.web.utils.UserIdUtil
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.servlet.http.HttpServletResponse
@@ -32,10 +31,6 @@ class FileRestController(private val userFileService: UserFileService) {
 
     /**
      * 获取文件列表
-     *
-     * @param parentId
-     * @param fileTypes
-     * @return
      */
     @Operation(summary = "获取文件列表")
     @GetMapping("files")
@@ -50,9 +45,6 @@ class FileRestController(private val userFileService: UserFileService) {
 
     /**
      * 新建文件夹
-     *
-     * @param createFolderPO
-     * @return
      */
     @Operation(summary = "新建文件夹")
     @PostMapping("file/folder")
@@ -69,8 +61,6 @@ class FileRestController(private val userFileService: UserFileService) {
 
     /**
      * 文件重命名
-     * @param [updateUserFileInput]
-     * @return [ResultModel]返回结果
      */
     @Operation(summary = "文件重命名")
     @PutMapping("file")
@@ -81,9 +71,6 @@ class FileRestController(private val userFileService: UserFileService) {
 
     /**
      * 删除文件(批量)
-     *
-     * @param deletePO
-     * @return
      */
     @Operation(summary = "删除文件(批量)")
     @DeleteMapping("file")
@@ -94,9 +81,6 @@ class FileRestController(private val userFileService: UserFileService) {
 
     /**
      * 上传文件
-     *
-     * @param fileUploadVO
-     * @return
      */
     @Operation(summary = "上传文件")
     @PostMapping("file/upload")
@@ -128,9 +112,6 @@ class FileRestController(private val userFileService: UserFileService) {
 
     /**
      * 秒传文件
-     *
-     * @param fileSecUploadPO
-     * @return
      */
     @Operation(summary = "秒传文件")
     @PostMapping("file/sec-upload")
@@ -149,9 +130,6 @@ class FileRestController(private val userFileService: UserFileService) {
 
     /**
      * 下载文件(只支持单个下载)
-     *
-     * @param fileId
-     * @param response
      */
     @Operation(summary = "下载文件(只支持单个下载)")
     @GetMapping("file/download")
@@ -166,8 +144,6 @@ class FileRestController(private val userFileService: UserFileService) {
 
     /**
      * 获取文件夹树
-     *
-     * @return
      */
     @Operation(summary = "获取文件夹树")
     @GetMapping("file/folder/tree")
@@ -180,9 +156,6 @@ class FileRestController(private val userFileService: UserFileService) {
 
     /**
      * 转移文件(批量)
-     *
-     * @param transferAndCopyVO
-     * @return
      */
     @Operation(summary = "转移文件(批量)")
     @PostMapping("file/transfer")
@@ -200,9 +173,6 @@ class FileRestController(private val userFileService: UserFileService) {
 
     /**
      * 复制文件(批量)
-     *
-     * @param copyVO
-     * @return
      */
     @Operation(summary = "复制文件(批量)")
     @PostMapping("file/copy")
@@ -220,10 +190,6 @@ class FileRestController(private val userFileService: UserFileService) {
 
     /**
      * 通过文件名搜索文件列表
-     *
-     * @param keyword
-     * @param fileTypes
-     * @return
      */
     @Operation(summary = "通过文件名搜索文件列表")
     @GetMapping("file/search")
@@ -238,9 +204,6 @@ class FileRestController(private val userFileService: UserFileService) {
 
     /**
      * 查询文件详情
-     *
-     * @param fileId
-     * @return
      */
     @Operation(summary = "查询文件详情")
     @GetMapping("file")
@@ -254,8 +217,6 @@ class FileRestController(private val userFileService: UserFileService) {
 
     /**
      * 获取面包屑列表
-     *
-     * @return
      */
     @Operation(summary = "获取面包屑列表")
     @GetMapping("file/breadcrumbs")
@@ -269,9 +230,6 @@ class FileRestController(private val userFileService: UserFileService) {
 
     /**
      * 预览单个文件
-     *
-     * @param fileId
-     * @return
      */
     @Operation(summary = "预览单个文件")
     @GetMapping("preview")

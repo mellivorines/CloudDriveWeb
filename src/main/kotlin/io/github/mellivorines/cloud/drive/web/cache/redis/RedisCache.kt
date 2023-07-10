@@ -28,7 +28,7 @@ class RedisCache : Cache {
      * @return
      */
     override operator fun get(key: Any): Any? {
-        return redisUtil.get(key.toString())
+        return redisUtil[key.toString()]
     }
 
     /**

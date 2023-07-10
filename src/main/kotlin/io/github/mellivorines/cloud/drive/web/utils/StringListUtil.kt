@@ -13,7 +13,7 @@ import java.util.stream.Collectors
  * @since 2023/6/29
  */
 object StringListUtil {
-    const val COMMON_SEPARATOR = "__,__"
+    private const val COMMON_SEPARATOR = "__,__"
 
     /**
      * 字符串分隔成Integer集合
@@ -49,7 +49,7 @@ object StringListUtil {
      * @param ids
      * @return
      */
-    fun longListToString(vararg ids: Long?): String {
+    private fun longListToString(vararg ids: Long?): String {
         return StringUtils.join(listOf(*ids), COMMON_SEPARATOR)
     }
 

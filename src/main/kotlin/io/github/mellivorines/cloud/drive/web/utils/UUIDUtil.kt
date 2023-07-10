@@ -11,8 +11,8 @@ import java.util.*
  * @since 2023/6/30
  */
 object UUIDUtil {
-    const val EMPTY_STR = ""
-    const val HYPHEN_STR = "-"
+    private const val EMPTY_STR = ""
+    private const val HYPHEN_STR = "-"
     val uUID: String
         /**
          * 获取UUID字符串

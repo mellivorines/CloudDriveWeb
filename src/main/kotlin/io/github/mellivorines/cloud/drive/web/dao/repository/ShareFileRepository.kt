@@ -13,7 +13,5 @@ import org.springframework.stereotype.Repository
  * @date 2023-07-01
  */
 @Repository
-interface ShareFileRepository : KRepository<ShareFile, String> {
-
-}
+interface ShareFileRepository : KRepository<ShareFile, String>
 
