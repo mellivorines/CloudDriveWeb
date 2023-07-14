@@ -212,7 +212,7 @@ class UserService(private val userRepository: UserRepository, private val cacheM
     private fun checkResetPasswordToken(username: String, token: String) {
         val cacheToken = cacheManager[CommonConstant.USER_FORGET_PREFIX + username]
         if (Objects.isNull(cacheToken)) {
-            throw BizException(ResponseCode.TOKEN_EXPIRE.code, ResponseCode.TOKEN_EXPIRE.msg)
+            throw BizException(ResponseCode.CODE_505.code, ResponseCode.CODE_505.msg)
         }
         if (cacheToken != token) {
             throw BizException(msg = "token错误")

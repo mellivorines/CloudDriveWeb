@@ -12,7 +12,7 @@ data class BizException(
     /**
      * 错误码
      */
-    private var code: Int? = 500,
+    private var code: Int = 500,
 
     /**
      * 错误信息

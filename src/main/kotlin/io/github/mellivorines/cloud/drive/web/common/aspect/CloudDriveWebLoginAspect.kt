@@ -62,7 +62,7 @@ class CloudDriveWebLoginAspect {
         log.debug("成功拦截到请求,uri为:{}", uri)
         if (!checkAndSaveUserId(request)) {
             log.warn("成功拦截到请求,uri为:{}, 检测到用户未登录,将跳转至登录页面", uri)
-            return fail(ResponseCode.NEED_LOGIN.msg)
+            return fail(ResponseCode.CODE_504.msg)
         }
         log.debug("成功拦截到请求,uri为:{}, 请求通过", uri)
         return proceedingJoinPoint.proceed()

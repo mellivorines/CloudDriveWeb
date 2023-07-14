@@ -45,7 +45,7 @@ class CloudDriveWebShareCodeAspect {
         log.debug("成功拦截到请求,uri为:{}", uri)
         if (!checkAndSaveShareId(request)) {
             log.warn("成功拦截到请求,uri为:{}, 检测到用户分享码失效,将跳转至分享码输入页面", uri)
-            return fail(ResponseCode.NEED_SHARE_CODE.msg)
+            return fail(ResponseCode.CODE_506.msg)
         }
         log.debug("成功拦截到请求,uri为:{}, 请求通过", uri)
         return proceedingJoinPoint.proceed()
